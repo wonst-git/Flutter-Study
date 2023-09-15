@@ -7,6 +7,7 @@ part 'api_service.g.dart';
 
 const String baseUrl = "https://webtoon-crawler.nomadcoders.workers.dev";
 const String today = "/today";
+const String episodes = "/episodes";
 
 @RestApi(baseUrl: baseUrl)
 abstract class ApiRepository {

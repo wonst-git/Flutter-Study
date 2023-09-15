@@ -1,43 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:toonflix/component/card.dart';
 import 'package:toonflix/services/http_service.dart';
 
 import '../models/webtoon_model.dart';
 
 class HomeScreen extends StatelessWidget {
-
-  // List<WebtoonModel> webtoons = [];
-  // bool isLoading = true;
+  static const String screenId = '/homeScreen';
 
   HomeScreen({super.key});
 
-  Future<List<WebtoonModel>> webtoons = HttpService.getTodaysToons()
-  // final dio = Dio();
-  // final repository = ApiRepository(dio);
-  //
-  // repository.getTodaysToons().then((value) {
-  //   for (var toon in value) {
-  //     print(toon.toString());
-  //   }
-  // });
-
-  // final httpService = HttpService();
-  //
-  // void waitForWebToons() async {
-  //   webtoons = await HttpService.getTodaysToons();
-  //   isLoading = false;
-  //   setState(() {});
-  // }
+  Future<List<WebtoonModel>> webtoons = HttpService.getTodaysToons();
 
   @override
   Widget build(BuildContext context) {
-    // print(webtoons);
-    // print(isLoading);
-
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        systemOverlayStyle: const SystemUiOverlayStyle(statusBarColor: Colors.transparent),
+        systemOverlayStyle: const SystemUiOverlayStyle(statusBarColor: Colors.transparent, statusBarIconBrightness: Brightness.dark),
         centerTitle: true,
         elevation: 2,
         backgroundColor: Colors.white,
@@ -49,16 +29,30 @@ class HomeScreen extends StatelessWidget {
         ),
       ),
       body: FutureBuilder(
-        initialData: [],
         future: webtoons,
         builder: (context, snapshot) {
-          if(snapshot.hasData) {
-            return Text("There is data!");
+          if (snapshot.data?.isNotEmpty == true) {
+            return webtoonGridView(snapshot);
           } else {
-            return Text("Loading...");
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
           }
         },
       ),
     );
   }
+
+  GridView webtoonGridView(AsyncSnapshot<List<WebtoonModel>> snapshot) => GridView.builder(
+        shrinkWrap: true,
+        physics: const BouncingScrollPhysics(),
+        padding: const EdgeInsets.all(8),
+        itemBuilder: (context, index) {
+          var webtoon = snapshot.data?[index];
+
+          return WebtoonCard(title: webtoon?.title ?? "", thumb: webtoon?.thumb ?? "", id: webtoon?.id ?? "");
+        },
+        itemCount: snapshot.data?.length,
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, childAspectRatio: 5/8),
+      );
 }
