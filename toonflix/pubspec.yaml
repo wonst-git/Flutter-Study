@@ -23,6 +23,12 @@ dependencies:
   logger: any
   json_annotation: ^4.8.1
 
+  #url_launcher
+  url_launcher: ^6.1.7
+
+  #webview_flutter
+  webview_flutter: ^4.2.4
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
